@@ -89,7 +89,7 @@ class _RoutineCheckinCard extends StatelessWidget {
           ListTile(
             leading: CircleAvatar(
               backgroundColor: color.withValues(alpha: 0.15),
-              child: Icon(iconFromCodePoint(routine.iconCodePoint), color: color),
+              child: Icon(iconAt(routine.iconIndex), color: color),
             ),
             title: Text(routine.name),
             subtitle: routine.stepCount > 0 && checkin != null

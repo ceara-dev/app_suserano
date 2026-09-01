@@ -25,5 +25,4 @@ const routineIcons = <IconData>[
   Icons.pets,
 ];
 
-IconData iconFromCodePoint(int codePoint) =>
-    IconData(codePoint, fontFamily: 'MaterialIcons');
+IconData iconAt(int index) => routineIcons[index % routineIcons.length];

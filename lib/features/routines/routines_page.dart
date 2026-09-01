@@ -67,7 +67,7 @@ class _RoutineList extends StatelessWidget {
             leading: CircleAvatar(
               backgroundColor: color.withValues(alpha: 0.15),
               child: Icon(
-                iconFromCodePoint(routine.iconCodePoint),
+                iconAt(routine.iconIndex),
                 color: color,
               ),
             ),

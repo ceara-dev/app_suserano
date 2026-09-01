@@ -32,7 +32,7 @@ class _RoutineEditorPageState extends State<RoutineEditorPage> {
   final _descriptionController = TextEditingController();
   final List<_StepEntry> _steps = [];
   int _colorValue = routineColors.first;
-  int _iconCodePoint = routineIcons.first.codePoint;
+  int _iconIndex = 0;
   Routine? _original;
 
   bool get _isEditing => widget.routineId != null;
@@ -54,7 +54,7 @@ class _RoutineEditorPageState extends State<RoutineEditorPage> {
         _nameController.text = _original!.name;
         _descriptionController.text = _original!.description;
         _colorValue = _original!.colorValue;
-        _iconCodePoint = _original!.iconCodePoint;
+        _iconIndex = _original!.iconIndex;
         _steps.addAll(_original!.steps.map(_StepEntry.new));
       }
     }
@@ -114,7 +114,7 @@ class _RoutineEditorPageState extends State<RoutineEditorPage> {
             name: name,
             description: _descriptionController.text.trim(),
             colorValue: _colorValue,
-            iconCodePoint: _iconCodePoint,
+            iconIndex: _iconIndex,
             steps: steps,
             createdAt: DateTime.now(),
           )
@@ -122,7 +122,7 @@ class _RoutineEditorPageState extends State<RoutineEditorPage> {
             name: name,
             description: _descriptionController.text.trim(),
             colorValue: _colorValue,
-            iconCodePoint: _iconCodePoint,
+            iconIndex: _iconIndex,
             steps: steps,
           );
     final bloc = context.read<RoutineBloc>();
@@ -230,15 +230,14 @@ class _RoutineEditorPageState extends State<RoutineEditorPage> {
             spacing: 8,
             runSpacing: 8,
             children: [
-              for (final icon in routineIcons)
+              for (var i = 0; i < routineIcons.length; i++)
                 ChoiceChip(
-                  selected: _iconCodePoint == icon.codePoint,
-                  onSelected: (_) =>
-                      setState(() => _iconCodePoint = icon.codePoint),
+                  selected: _iconIndex == i,
+                  onSelected: (_) => setState(() => _iconIndex = i),
                   avatar: Icon(
-                    icon,
+                    routineIcons[i],
                     size: 18,
-                    color: _iconCodePoint == icon.codePoint
+                    color: _iconIndex == i
                         ? Theme.of(context).colorScheme.primary
                         : null,
                   ),

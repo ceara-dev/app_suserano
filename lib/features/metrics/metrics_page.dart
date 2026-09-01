@@ -157,7 +157,7 @@ class _RoutineMetricsCard extends StatelessWidget {
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: color.withValues(alpha: 0.15),
-          child: Icon(iconFromCodePoint(routine.iconCodePoint), color: color),
+          child: Icon(iconAt(routine.iconIndex), color: color),
         ),
         title: Text(routine.name),
         subtitle: Padding(

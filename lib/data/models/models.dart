@@ -39,7 +39,7 @@ class Routine {
     required this.name,
     this.description = '',
     this.colorValue = 0xFF6750A4,
-    this.iconCodePoint = 0xe021,
+    this.iconIndex = 0,
     required this.steps,
     required this.createdAt,
     this.active = true,
@@ -49,7 +49,7 @@ class Routine {
   String name;
   String description;
   int colorValue;
-  int iconCodePoint;
+  int iconIndex;
   List<RoutineStep> steps;
   DateTime createdAt;
   bool active;
@@ -60,7 +60,7 @@ class Routine {
     String? name,
     String? description,
     int? colorValue,
-    int? iconCodePoint,
+    int? iconIndex,
     List<RoutineStep>? steps,
     bool? active,
   }) =>
@@ -69,7 +69,7 @@ class Routine {
         name: name ?? this.name,
         description: description ?? this.description,
         colorValue: colorValue ?? this.colorValue,
-        iconCodePoint: iconCodePoint ?? this.iconCodePoint,
+        iconIndex: iconIndex ?? this.iconIndex,
         steps: steps ?? this.steps,
         createdAt: createdAt,
         active: active ?? this.active,
@@ -86,7 +86,7 @@ class RoutineAdapter extends TypeAdapter<Routine> {
         name: reader.readString(),
         description: reader.readString(),
         colorValue: reader.readInt(),
-        iconCodePoint: reader.readInt(),
+        iconIndex: reader.readInt(),
         steps: reader
             .readList()
             .map((e) => (e as RoutineStep))
@@ -101,7 +101,7 @@ class RoutineAdapter extends TypeAdapter<Routine> {
     writer.writeString(obj.name);
     writer.writeString(obj.description);
     writer.writeInt(obj.colorValue);
-    writer.writeInt(obj.iconCodePoint);
+    writer.writeInt(obj.iconIndex);
     writer.writeList(obj.steps);
     writer.writeInt(obj.createdAt.millisecondsSinceEpoch);
     writer.writeBool(obj.active);
