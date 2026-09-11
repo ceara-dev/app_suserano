@@ -146,16 +146,22 @@ class CheckinAdapter extends TypeAdapter<Checkin> {
 
   @override
   Checkin read(BinaryReader reader) {
+    final routineId = reader.readString();
+    final dateKey = reader.readString();
+    final completedStepIds =
+        reader.readList().map((e) => e as String).toList();
+    final wholeRoutineDone = reader.readBool();
     final completedAtMillis = reader.readInt();
+    final totalSteps = reader.readInt();
     return Checkin(
-      routineId: reader.readString(),
-      dateKey: reader.readString(),
-      completedStepIds: reader.readList().map((e) => e as String).toList(),
-      wholeRoutineDone: reader.readBool(),
+      routineId: routineId,
+      dateKey: dateKey,
+      completedStepIds: completedStepIds,
+      wholeRoutineDone: wholeRoutineDone,
       completedAt: completedAtMillis < 0
           ? null
           : DateTime.fromMillisecondsSinceEpoch(completedAtMillis),
-      totalSteps: reader.readInt(),
+      totalSteps: totalSteps,
     );
   }
 
