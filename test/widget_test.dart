@@ -6,7 +6,27 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 
 import 'package:app_rotina/data/models/models.dart';
+import 'package:app_rotina/data/repositories/auth_repository.dart';
 import 'package:app_rotina/main.dart';
+
+class FakeAuthRepository implements AuthRepository {
+  FakeAuthRepository({AppUser? user})
+      : currentUser = user ?? const AppUser(uid: 'test-uid'),
+        authStateChanges =
+            Stream.value(user ?? const AppUser(uid: 'test-uid'));
+
+  @override
+  final Stream<AppUser?> authStateChanges;
+
+  @override
+  final AppUser? currentUser;
+
+  @override
+  Future<void> signInWithGoogle() async {}
+
+  @override
+  Future<void> signOut() async {}
+}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -38,7 +58,11 @@ void main() {
   testWidgets('cria uma rotina e faz check-in dos passos',
       (WidgetTester tester) async {
     await tester.pumpWidget(
-      App(routineBox: routineBox, checkinBox: checkinBox),
+      App(
+        routineBox: routineBox,
+        checkinBox: checkinBox,
+        authRepository: FakeAuthRepository(),
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -77,12 +101,16 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('1 de 1 rotinas concluídas'), findsOneWidget);
-    expect(find.byIcon(Icons.check_circle), findsOneWidget);
+    expect(find.text('Concluída'), findsOneWidget);
   });
 
   testWidgets('navega para a aba de métricas', (WidgetTester tester) async {
     await tester.pumpWidget(
-      App(routineBox: routineBox, checkinBox: checkinBox),
+      App(
+        routineBox: routineBox,
+        checkinBox: checkinBox,
+        authRepository: FakeAuthRepository(),
+      ),
     );
     await tester.pumpAndSettle();
 

@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -5,34 +6,50 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'core/theme.dart';
 import 'data/models/models.dart';
+import 'data/repositories/auth_repository.dart';
 import 'data/repositories/checkin_repository.dart';
 import 'data/repositories/routine_repository.dart';
+import 'features/auth/bloc/auth_bloc.dart';
+import 'features/auth/login_page.dart';
 import 'features/checkin/bloc/checkin_bloc.dart';
 import 'features/metrics/bloc/metrics_bloc.dart';
 import 'features/routines/bloc/routine_bloc.dart';
 import 'features/shell/home_shell.dart';
+import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Hive.initFlutter();
   Hive.registerAdapter(RoutineStepAdapter());
   Hive.registerAdapter(RoutineAdapter());
   Hive.registerAdapter(CheckinAdapter());
   final routineBox = await Hive.openBox<Routine>('routines');
   final checkinBox = await Hive.openBox<Checkin>('checkins');
-  runApp(App(routineBox: routineBox, checkinBox: checkinBox));
+  runApp(App(
+    routineBox: routineBox,
+    checkinBox: checkinBox,
+    authRepository: FirebaseAuthRepository(),
+  ));
 }
 
 class App extends StatelessWidget {
-  const App({super.key, required this.routineBox, required this.checkinBox});
+  const App({
+    super.key,
+    required this.routineBox,
+    required this.checkinBox,
+    required this.authRepository,
+  });
 
   final Box<Routine> routineBox;
   final Box<Checkin> checkinBox;
+  final AuthRepository authRepository;
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
+        RepositoryProvider.value(value: authRepository),
         RepositoryProvider(
           create: (_) => RoutineRepository(routineBox),
         ),
@@ -42,6 +59,9 @@ class App extends StatelessWidget {
       ],
       child: MultiBlocProvider(
         providers: [
+          BlocProvider(
+            create: (context) => AuthBloc(authRepository),
+          ),
           BlocProvider(
             create: (context) =>
                 RoutineBloc(context.read<RoutineRepository>()),
@@ -70,9 +90,25 @@ class App extends StatelessWidget {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          home: const HomeShell(),
+          home: const AuthGate(),
         ),
       ),
+    );
+  }
+}
+
+class AuthGate extends StatelessWidget {
+  const AuthGate({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        if (state is! AuthAuthenticated) {
+          return const LoginPage();
+        }
+        return const HomeShell();
+      },
     );
   }
 }

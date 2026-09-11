@@ -59,11 +59,12 @@ class _StatGrid extends StatelessWidget {
       (Icons.percent, '${(state.overallRate * 100).round()}%',
           'Taxa de conclusão'),
     ];
+    final primary = Theme.of(context).colorScheme.primary;
     return GridView.count(
       crossAxisCount: 2,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      childAspectRatio: 1.6,
+      childAspectRatio: 1.25,
       padding: const EdgeInsets.all(16),
       mainAxisSpacing: 12,
       crossAxisSpacing: 12,
@@ -71,25 +72,28 @@ class _StatGrid extends StatelessWidget {
         for (final (icon, value, label) in items)
           Card(
             margin: EdgeInsets.zero,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(icon,
-                        size: 20,
-                        color: Theme.of(context).colorScheme.primary),
-                    const SizedBox(width: 6),
-                    Text(value,
-                        style: Theme.of(context).textTheme.headlineSmall),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(label,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodySmall),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 14,
+                    backgroundColor: primary.withValues(alpha: 0.12),
+                    child: Icon(icon, size: 16, color: primary),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(value,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.w800)),
+                  const SizedBox(height: 2),
+                  Text(label,
+                      style: Theme.of(context).textTheme.bodySmall),
+                ],
+              ),
             ),
           ),
       ],

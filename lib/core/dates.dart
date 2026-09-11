@@ -14,3 +14,9 @@ int daysBetween(DateTime from, DateTime to) {
   final b = dateOnly(to);
   return b.difference(a).inDays;
 }
+
+String greetingFor(DateTime time) {
+  if (time.hour < 12) return 'Bom dia,';
+  if (time.hour < 18) return 'Boa tarde,';
+  return 'Boa noite,';
+}
